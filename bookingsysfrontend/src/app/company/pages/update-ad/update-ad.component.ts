@@ -1,0 +1,102 @@
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CompanyService } from '../../services/company.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+
+@Component({
+  selector: 'app-update-ad',
+  standalone: false,
+  templateUrl: './update-ad.component.html',
+  styleUrl: './update-ad.component.scss'
+})
+export class UpdateAdComponent {
+
+   adId:any;
+
+   selectedFile: File | null;
+   imagePreview: string | ArrayBuffer | null;
+   validateForm!: FormGroup;
+   existingImage: string | null = null;
+   imgChanged = false;
+
+
+
+
+    constructor(
+      private fb: FormBuilder,
+      private notification: NzNotificationService,
+      private router: Router,
+      private companyService: CompanyService,
+      private activatedroute: ActivatedRoute
+    ) {}
+
+
+   ngOnInit() {
+    this.validateForm = this.fb.group({
+    serviceName: [null, [Validators.required]],
+    description: [null, [Validators.required, Validators.maxLength(200)]],
+    price: [null, [Validators.required]],
+  })
+    this.adId = this.activatedroute.snapshot.params['id'];
+    this.getAdById();
+  }
+
+    getAdById() {
+      this.companyService.getAdById(this.adId).subscribe(res => {
+        console.log(res);
+        this.validateForm.patchValue(res);
+        this.existingImage = 'data:image/jpeg;base64,' + res.returnedImg;
+      });
+    }
+    
+get remainingChars(): number {
+  const desc = this.validateForm.get('description')?.value || '';
+  return 200 - desc.length;
+}
+  
+
+onFileSelected(event: any) {
+  this.selectedFile = event.target.files[0];
+  this.previewImage();
+  this.existingImage = null;
+  this.imgChanged = true;
+}
+
+previewImage() {
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result;
+  };
+  reader.readAsDataURL(this.selectedFile);
+}
+
+updateAd() {
+  const formData: FormData = new FormData();
+  if(this.imgChanged && this.selectedFile){
+      formData.append('img', this.selectedFile);
+  }
+  formData.append('serviceName', this.validateForm.get('serviceName').value);
+  formData.append('description', this.validateForm.get('description').value);
+  formData.append('price', this.validateForm.get('price').value);  
+
+  this.companyService.updateAd(this.adId, formData).subscribe(res => {
+  this.notification
+    .success(
+      'SUCCESS',
+      `Ad Updated Successfully!`,
+      { nzDuration: 3000 }
+    );
+
+  this.router.navigateByUrl('company/ads');
+}, error => {
+  const errorMessage = error.error || "Something went wrong!";
+  this.notification.error('ERROR', errorMessage, { nzDuration: 3000 });
+  console.log(error)
+}
+);
+
+}
+
+
+}

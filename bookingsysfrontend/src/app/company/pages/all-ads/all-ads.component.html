@@ -1,0 +1,26 @@
+<div class="bg" style="padding-top: 20px;">
+  <div style="margin-top:10px;" class="child" *ngFor="let ad of ads">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <img class="profile" [src]="updateImg(ad.returnedImg)" style="height: 130px; width: 200px; border-radius: 10px;" />
+      </div>
+      <div nz-col nzSpan="16">
+        <h2 style="color: #059223; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+          {{ad.serviceName}}
+        </h2>
+        <hr>
+        <h5>
+          <b>Price : </b>Rs {{ad.price}}/-
+        </h5>
+        <h5>
+          <b>Description : </b>{{ad.description}}
+        </h5>
+        <hr>
+        <div style="float: right;">
+          <button nzSize="small" nz-button nzType="primary" [routerLink]="'/company/ad/' + ad.id">Update</button>
+          <button style="margin-left: 10px;" nzSize="small" nz-button nzType="primary" nzDanger (click)="deleteAd(ad.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

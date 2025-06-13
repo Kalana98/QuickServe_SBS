@@ -1,0 +1,68 @@
+<div class="bg" style="padding-top: 20px;">
+    <div class="parent">
+        <div class="child">
+            <div nz-col>
+                <h1 style="margin-left: 55px">Client Signup</h1>
+            </div>
+
+            <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+                <nz-form-item>
+                  <nz-form-control nzHasFeedback nzErrorTip="The input is not valid E-mail!">
+                      <input nz-input placeholder="E-mail" formControlName="email" id="email" />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+          <nz-form-control nzHasFeedback [nzValidateStatus]="validateForm.controls['password']" [nzErrorTip]="passwordErrorTpl">
+            <input nz-input placeholder="Password" formControlName="password" id="password" type="password" />
+            <ng-template #passwordErrorTpl>
+              Password must contain at least 8 characters, one capital letter, one symbol, and one number.
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control nzHasFeedback [nzValidateStatus]="validateForm.controls['checkPassword']" [nzErrorTip]="checkPasswordErrorTpl" >
+            <input nz-input placeholder="Confirm Password" formControlName="checkPassword" id="checkPassword" type="password" />
+            <ng-template #checkPasswordErrorTpl>
+              Passwords do not match.
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-control nzHasFeedback nzErrorTip="The input is not valid name!">
+                      <input nz-input placeholder="Name" formControlName="name" id="email" />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-control nzHasFeedback nzErrorTip="The input is not valid lastname!">
+                      <input nz-input placeholder="Lastname" formControlName="lastname" id="email" />
+                  </nz-form-control>
+                </nz-form-item>
+
+               <nz-form-item>
+          <nz-form-control nzHasFeedback [nzValidateStatus]="validateForm.controls['phone']" [nzErrorTip]="phoneErrorTpl" >
+            <input nz-input placeholder="Phone" formControlName="phone" id="phone" type="text" maxlength="10" (keypress)="onlyNumbers($event)" />
+            <ng-template #phoneErrorTpl>
+              Phone number must be exactly 10 digits.
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+             <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" [disabled]="!validateForm.valid">
+                  Register
+            </button>
+            <h5>Already registered ?</h5>
+           <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" routerLink="/">
+             Log in
+           </button>
+
+
+            </form>
+
+        </div>
+    </div>
+</div>

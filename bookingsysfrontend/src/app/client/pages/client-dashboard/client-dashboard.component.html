@@ -1,0 +1,35 @@
+<form nz-form [formGroup]="validateForm" (submit)="searchAdByName()" 
+      style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+  <input nz-input placeholder="Enter service to search" nzSize="large" style="width: 20%;" 
+         formControlName="service" />
+
+  <button nz-button nzSize="large" nzType="primary" style="margin-left: 15px;" 
+          [disabled]="validateForm.invalid">Search</button>
+</form>
+
+
+<div class="bg" style="padding-top: 20px;" >
+  <div style="margin-top:10px;" class="child" *ngFor="let ad of ads" (click)="navigateViewPage(ad.id)">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <img class="profile" [src]="updateImg(ad.returnedImg)" style="height: 130px; width: 200px; border-radius: 10px;" />
+      </div>
+      <div nz-col nzSpan="16">
+        <h2 style="cursor: pointer; color: #059223; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+          {{ad.serviceName}}
+        </h2>
+        <hr>
+        <h5>
+          <b>Price : </b>Rs {{ad.price}}/-
+        </h5>
+        <h5>
+          <b>Description : </b>{{ad.description}}
+        </h5>
+        <hr>
+        <!-- <div style="float: right;">
+          <button nzSize="small" nz-button nzType="primary" [routerLink]="'/client/ad/' + ad.id">View</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

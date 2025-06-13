@@ -1,0 +1,35 @@
+<div class="booking-prompt">
+  <h3><b>Hey {{username}}, These are your bookings !</b></h3>
+</div>
+
+
+  <nz-table style="padding: 30px;" [nzData]="bookedServices" #basicTable [nzPageSize]="20" [nzShowPagination]="'false'">
+  <thead>
+    <tr>
+      <th style="font-weight: bolder; color: #03350f; text-align: center; background-color: #c6f1bb;">Service</th>
+      <th style="font-weight: bolder; color: #03350f; text-align: center; background-color: #c6f1bb;">Date</th>
+      <th style="font-weight: bolder; color: #03350f; text-align: center; background-color: #c6f1bb;">Status</th>
+      <th style="font-weight: bolder; color: #03350f; text-align: center; background-color: #c6f1bb;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr *ngFor="let booking of basicTable.data" style="text-align: center; cursor: pointer;" (click)="navigateViewPage(booking.adId)">
+
+      <td style="font-weight:600; text-align: left; padding-left: 100px;">{{ booking.serviceName }}</td>
+      <td>{{ booking.bookDate | date : 'dd/MM/yyyy' }}</td>
+      <td style="font-weight:600;">{{ booking.reservationStatus }}</td>
+      <!-- *ngIf="booking.reviewStatus == 'FALSE'" -->
+     
+        <td>
+            <button class="review-btn"  nzSize="small" nz-button nzType="primary" routerLink="/client/review/{{booking.id}}">Review</button>
+            
+            <button class="delete-btn" nzSize="small" nz-button nzType="primary" nzDanger (click)="deleteBooking(booking.id); $event.stopPropagation()">Delete</button>        
+          </td>
+      
+    </tr>
+  </tbody>
+</nz-table>
+
+
+
+
