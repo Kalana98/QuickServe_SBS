@@ -14,6 +14,7 @@ import com.epiclanka.bookingsysbackend.repository.AdRepository;
 import com.epiclanka.bookingsysbackend.repository.ReservationRepository;
 import com.epiclanka.bookingsysbackend.repository.ReviewRepository;
 import com.epiclanka.bookingsysbackend.repository.UserRepository;
+import com.epiclanka.bookingsysbackend.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +39,18 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-
+    //Exception: done
     public List<AdDTO> getAllAds(){
         return adRepository.findAll().stream().map(Ad::getAdDto).collect(Collectors.toList());
     }
 
+    //Exception: done
     public List<AdDTO> searchAdByName(String name){
         return adRepository.findAllByServiceNameContaining(name).stream().map(Ad::getAdDto).collect(Collectors.toList());
     }
 
-    public boolean bookService(ReservationDTO reservationDTO) {
+    //Exception: done
+    public String bookService(ReservationDTO reservationDTO) {
         Optional<Ad> optionalAd = adRepository.findById(reservationDTO.getAdId());
         Optional<User> optionalUser = userRepository.findById(reservationDTO.getUserId());
 
@@ -63,12 +66,14 @@ public class ClientServiceImpl implements ClientService {
             reservation.setReviewStatus(ReviewStatus.FALSE);
 
             reservationRepository.save(reservation);
-            return true;
-        }
+            return VarList.RSP_SUCCESS;
 
-        return false;
+        }else if(!optionalAd.isPresent() || !optionalUser.isPresent())
+            return VarList.RSP_NO_DATA_FOUND;
+        return VarList.RSP_FAIL;
     }
 
+    //Exception: done
     public AdDetailsForClientDTO getAdDetailsByAdId(Long adId) {
         Optional<Ad> optionalAd = adRepository.findById(adId);
         AdDetailsForClientDTO adDetailsForClientDTO = new AdDetailsForClientDTO();
@@ -80,20 +85,29 @@ public class ClientServiceImpl implements ClientService {
         return adDetailsForClientDTO;
     }
 
+    //Exception: done
     public List<ReservationDTO> getAllBookingsByUserId(Long userId) {
         return reservationRepository.findAllByUserId(userId).stream().map(Reservation::getReservationDto).collect(Collectors.toList());
     }
 
-    public boolean deleteBooking(Long id) {
+    //Exception: done
+    public String deleteBooking(Long id) {
+
         Optional<Reservation> optionalBooking = reservationRepository.findById(id);
+
         if (optionalBooking.isPresent()) {
             reservationRepository.delete(optionalBooking.get());
-            return true;
+            return VarList.RSP_SUCCESS;
+        } else if (!optionalBooking.isPresent()) {
+            return VarList.RSP_NO_DATA_FOUND;
         }
-        return false;
+        return VarList.RSP_FAIL;
+
     }
 
-    public Boolean giveReview(ReviewDTO reviewDTO) {
+    //Exception: done
+    public String giveReview(ReviewDTO reviewDTO) {
+
         Optional<User> optionalUser = userRepository.findById(reviewDTO.getUserId());
         Optional<Reservation> optionalBooking = reservationRepository.findById(reviewDTO.getBookId());
 
@@ -113,12 +127,16 @@ public class ClientServiceImpl implements ClientService {
             booking.setReviewStatus(ReviewStatus.TRUE);
             reservationRepository.save(booking);
 
-            return true;
+            return VarList.RSP_SUCCESS;
+
+        } else if (!optionalUser.isPresent() || !optionalBooking.isPresent()) {
+            return VarList.RSP_SOMETHING_IS_MISSING;
+        } else {
+            return VarList.RSP_FAIL;
         }
 
-        return false;
-    }
 
+    }
 
 
 }

@@ -14,13 +14,13 @@ public interface ClientService {
 
     List<AdDTO> searchAdByName(String name);
 
-    boolean bookService(ReservationDTO reservationDTO);
+    String bookService(ReservationDTO reservationDTO);
 
     AdDetailsForClientDTO getAdDetailsByAdId(Long adId);
 
     List<ReservationDTO> getAllBookingsByUserId(Long userId);
 
-    Boolean giveReview(ReviewDTO reviewDTO);
+    String giveReview(ReviewDTO reviewDTO);
 
-    boolean deleteBooking(Long id);
+    String deleteBooking(Long id);
 }

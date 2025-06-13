@@ -39,13 +39,27 @@ export class AdDetailComponent {
 
 
   getAdDetailsByAdId() {
-    this.clientService.getAdDetailsByAdId(this.adId).subscribe(res => {
-      console.log(res);
-      this.avatarUrl = 'data:image/jpeg;base64,' + res.adDTO.returnedImg;
-      this.ad = res.adDTO;
-      this.reviews = res.reviewDTOList;
-    });
-  }
+  this.clientService.getAdDetailsByAdId(this.adId).subscribe({
+    next: (res) => {
+      if (res.code === '00') {
+        const data = res.content;
+        this.avatarUrl = 'data:image/jpeg;base64,' + data.adDTO.returnedImg;
+        this.ad = data.adDTO;
+        this.reviews = data.reviewDTOList;
+      } else if (res.code === '01') {
+        this.notification.warning('ALERT', res.message, { nzDuration: 3000 });
+      } else if (res.code === '05') {
+        this.notification.error('ALERT', res.message, { nzDuration: 3000 });
+      }
+    },
+    error: (err) => {
+      this.notification.error('Server Error', err.error?.message || 'Something went wrong', {
+        nzDuration: 3000
+      });
+    }
+  });
+}
+
   
   disablePastDates = (current: Date): boolean => {
     const today = new Date();
@@ -61,15 +75,23 @@ export class AdDetailComponent {
     userId: UserStorageService.getUserId()
   }
 
-  this.clientService.bookService(bookServiceDTO).subscribe(res => {
-    this.notification
-      .success(
-        'ALERT',
-        'Your request posted successfully',
-        { nzDuration: 3000 }
-      );
-
-    this.router.navigateByUrl('/client/bookings');
+  this.clientService.bookService(bookServiceDTO).subscribe({
+    next: (res) => {
+      if(res.code === '00'){
+        this.notification.success('Success', res.message, { nzDuration: 3000 });
+        this.router.navigateByUrl('/client/bookings');
+      }else if(res.code === '01'){
+        this.notification.warning('ALERT', res.message, { nzDuration: 3000 });
+      }else if(res.code === '10'){
+        this.notification.warning('ALERT', res.message, { nzDuration: 3000 });
+      }else if(res.code === '05'){
+        this.notification.error('LAERT', res.message, { nzDuration: 3000 });
+      }
+    },
+    error: (err) => {
+      this.notification.error('Server Error', err.error?.message || 'Something went wrong', { nzDuration: 3000 });
+    }
+    
   });
 }
 

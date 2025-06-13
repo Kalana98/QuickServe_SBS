@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ClientService } from '../../services/client.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-client-dashboard',
@@ -18,12 +19,28 @@ export class ClientDashboardComponent {
 constructor(
   private clientService: ClientService,
   private fb: FormBuilder,
-  private router: Router
+  private router: Router,
+  private notification: NzNotificationService
 ) {}
 
 getAllAds() {
-  this.clientService.getAllAds().subscribe(res => {
-    this.ads = res;
+  this.clientService.getAllAds().subscribe({
+    next: (res) => {
+      if(res.code === '00'){
+        this.ads = res.content;
+        this.notification.success('ALERT', `You have ${res.content.length} ads`, { nzDuration: 1500});
+      }else if(res.code === '01'){
+        this.ads = [];
+        this.notification.blank('ALERT', res.message, { nzDuration: 1500 });
+      }else if(res.code === '05'){
+        this.notification.error('ALERT', res.message, { nzDuration: 1500 });
+      }
+    },
+    error: (err) => {
+      this.notification.error('Server Error', err.error?.message || 'Something Went Wrong', {
+        nzDuration: 3000
+      })
+    }
   });
 }
 
@@ -36,8 +53,22 @@ ngOnInit() {
 }
 
 searchAdByName() {
-  this.clientService.searchAdByName(this.validateForm.get(['service']).value).subscribe(res => {
-    this.ads = res;
+  this.clientService.searchAdByName(this.validateForm.get(['service']).value).subscribe({
+    next: (res) => {
+      if(res.code === '00'){
+        this.ads = res.content;
+        this.notification.success('ALERT', `You have ${res.content.length} results`, { nzDuration: 1500 });
+      }else if(res.code === '01'){
+        this.notification.warning('ALERT', res.message , { nzDuration: 1500 });
+      }else if(res.code === '05'){
+        this.notification.error('ALERT', res.message , { nzDuration: 1500 });
+      }
+    },
+    error: (err) => {
+      this.notification.error('Server Error', err.error?.message || 'Something Went Wrong', {
+        nzDuration: 3000
+      })
+    }
   });
 }
 
@@ -49,6 +80,8 @@ navigateViewPage(adId: number) {
 updateImg(img){
     return 'data:image/jpeg;base64, ' + img;
   }
+
+  
 
 
 

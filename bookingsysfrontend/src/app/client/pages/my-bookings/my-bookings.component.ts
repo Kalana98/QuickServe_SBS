@@ -28,8 +28,23 @@ ngOnInit() {
 }
 
 getMyBookings() {
-  this.clientService.getMyBookings().subscribe(res => {
-    this.bookedServices = res;
+  this.clientService.getMyBookings().subscribe({
+    next: (res) => {
+      if(res.code === '00'){
+        this.bookedServices = res.content;
+        this.notification.success('ALERT', `You have ${res.content.length} bookings`, { nzDuration: 3000});
+      }else if(res.code === '01'){
+        this.bookedServices = [];
+        this.notification.warning('Alert', res.message, { nzDuration: 3000})
+      }else if(res.code === '05'){
+        this.notification.error('Error', res.message, { nzDuration: 3000})
+      }
+    },
+    error: (err) => {
+      this.notification.error('Server Error', err.error?.message || 'Something Went Wrong', {
+        nzDuration: 3000
+      })
+    }
   });
 }
 

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CompanyService } from '../../services/company.service';
+import { UserStorageService } from '../../../basic/service/storage/user-storage.service';
 
 @Component({
   selector: 'app-create-ad',
@@ -20,7 +21,8 @@ constructor(
   private fb: FormBuilder,
   private notification: NzNotificationService,
   private router: Router,
-  private companyService: CompanyService
+  private companyService: CompanyService,
+  private UserStorageService: UserStorageService
 ) {}
 
 ngOnInit() {
@@ -45,29 +47,35 @@ previewImage() {
 }
 
 postAd() {
-    const formData: FormData = new FormData();
+  const formData: FormData = new FormData();
 
+  if (this.selectedFile) {
     formData.append('img', this.selectedFile);
-    formData.append('serviceName', this.validateForm.get('serviceName').value);
-    formData.append('description', this.validateForm.get('description').value);
-    formData.append('price', this.validateForm.get('price').value);  
+  }
 
-    this.companyService.postAd(formData).subscribe(res => {
-    this.notification
-      .success(
-        'ALERT',
-        `Your Ad Posted Successfully!`,
-        { nzDuration: 3000 }
-      );
+  formData.append('serviceName', this.validateForm.get('serviceName')?.value);
+  formData.append('description', this.validateForm.get('description')?.value);
+  formData.append('price', this.validateForm.get('price')?.value);
 
+  const userId = UserStorageService.getUserId();
+
+  if (!userId) {
+    this.notification.error('Error', 'User ID not found. Please login again.', { nzDuration: 3000 });
+    return;
+  }
+
+  this.companyService.postAd(formData).subscribe({
+  next: (res) => {
+    this.notification.success('Success', res.message || 'Your Ad Posted Successfully!', { nzDuration: 3000 });
     this.router.navigateByUrl('company/ads');
-  }, error => {
-    const errorMessage = error.error || "You should upload an image";
-    this.notification.error('ALERT', errorMessage, { nzDuration: 3000 });
-    console.log(error)
-  });
-  
+  },
+  error: (error) => {
+    this.notification.error('Error', error.error?.message || 'Something went wrong!', { nzDuration: 3000 });
+  }
+});
+
 }
+
 
 get remainingChars(): number {
   const desc = this.validateForm.get('description')?.value || '';

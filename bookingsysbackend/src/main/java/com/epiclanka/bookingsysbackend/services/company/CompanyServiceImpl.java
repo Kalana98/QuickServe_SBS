@@ -9,6 +9,8 @@ import com.epiclanka.bookingsysbackend.enums.ReservationStatus;
 import com.epiclanka.bookingsysbackend.repository.AdRepository;
 import com.epiclanka.bookingsysbackend.repository.ReservationRepository;
 import com.epiclanka.bookingsysbackend.repository.UserRepository;
+import com.epiclanka.bookingsysbackend.util.VarList;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,8 @@ public class CompanyServiceImpl implements CompanyService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    public boolean postAd(Long userId, AdDTO adDTO) throws IOException {
+    //Exception: done
+    public String postAd(Long userId, AdDTO adDTO) throws IOException {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             Ad ad = new Ad();
@@ -41,11 +44,12 @@ public class CompanyServiceImpl implements CompanyService {
             ad.setUser(optionalUser.get());
 
             adRepository.save(ad);
-            return true;
+            return VarList.RSP_SUCCESS;
         }
-        return false;
+        return VarList.RSP_FAIL;
     }
 
+    //Exception: done
     public List<AdDTO> getAllAds(Long userId) {
         return adRepository.findAllByUserId(userId)
                 .stream()
@@ -53,6 +57,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
     }
 
+    //Exception: done
     public AdDTO getAdById(Long adId) {
         Optional<Ad> optionalAd = adRepository.findById(adId);
         if (optionalAd.isPresent()) {
@@ -61,8 +66,8 @@ public class CompanyServiceImpl implements CompanyService {
         return null;
     }
 
-
-    public boolean updateAd(Long adId, AdDTO adDTO) throws IOException {
+    //Exception: done
+    public String updateAd(Long adId, AdDTO adDTO) throws IOException {
         Optional<Ad> optionalAd = adRepository.findById(adId);
         if (optionalAd.isPresent()) {
             Ad ad = optionalAd.get();
@@ -76,28 +81,30 @@ public class CompanyServiceImpl implements CompanyService {
             }
 
             adRepository.save(ad);
-            return true;
+            return VarList.RSP_SUCCESS;
         } else {
-            return false;
+            return VarList.RSP_NO_DATA_FOUND;
         }
     }
 
-    public boolean deleteAd(Long adId) {
+    //Exception: done
+    public String deleteAd(Long adId) {
         Optional<Ad> optionalAd = adRepository.findById(adId);
         if (optionalAd.isPresent()) {
             adRepository.delete(optionalAd.get());
-            return true;
+            return VarList.RSP_SUCCESS;
         }
-        return false;
+        return VarList.RSP_NO_DATA_FOUND;
     }
 
-
+    //Exception: done
     public List<ReservationDTO> getAllAdBookings(Long companyId){
         return reservationRepository.findAllByCompanyId(companyId)
                 .stream().map(Reservation::getReservationDto).collect(Collectors.toList());
     }
 
-    public boolean changeBookingStatus(Long bookingId, String status) {
+    //Exception: done
+    public String changeBookingStatus(Long bookingId, String status) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(bookingId);
         if (optionalReservation.isPresent()) {
             Reservation existingReservation = optionalReservation.get();
@@ -107,9 +114,9 @@ public class CompanyServiceImpl implements CompanyService {
                 existingReservation.setReservationStatus(ReservationStatus.REJECTED);
             }
             reservationRepository.save(existingReservation);
-            return true;
+            return VarList.RSP_SUCCESS;
         }
-        return false;
+        return VarList.RSP_NO_DATA_FOUND;
     }
 
 

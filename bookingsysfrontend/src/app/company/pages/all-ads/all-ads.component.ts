@@ -21,8 +21,22 @@ constructor(private companyService: CompanyService,
   }
 
   getAllAdsByUserId() {
-    this.companyService.getAllAdsByUserId().subscribe(res => {
-      this.ads = res;
+    this.companyService.getAllAdsByUserId().subscribe({
+      next: (res) => {
+        if(res.code === '00'){
+          // this.notification.success('ALERT', res.message, { nzDuration: 2000 });
+          this.ads=res.content;
+        }else if(res.code === '01'){
+          this.notification.blank('ALERT', res.message, { nzDuration: 2000 });
+        }else if(res.code === '05'){
+          this.notification.error('ALERT', res.message, { nzDuration: 2000 });
+        }
+      },
+       error: (err) => {
+        this.notification.error('Server Error', err.error?.message || 'Something went wrong', {
+          nzDuration: 2000
+        })
+      }
     });
   }
 
@@ -31,13 +45,24 @@ constructor(private companyService: CompanyService,
   }
 
   deleteAd(adId:any){
-    this.companyService.deleteAd(adId).subscribe(res => {
-      this.notification.success(
-        'SUCCESS', 
-        'Ad Deleted Successfully',
-        { nzDuration: 3000 }
-      );
-      this.getAllAdsByUserId();
+    this.companyService.deleteAd(adId).subscribe({
+      next: (res) => {
+        if(res.code === '00'){
+          this.notification.success('ALERT', res.message, { nzDuration: 2000 });
+          this.getAllAdsByUserId()
+        }else if(res.code === '01'){
+          this.notification.blank('ALERT', res.message, { nzDuration: 2000 });
+        }else if(res.code === '05'){
+          this.notification.error('ALERT', res.message, { nzDuration: 2000 });
+        }else if(res.code === '08'){
+          this.notification.error('ALERT', res.message, { nzDuration: 20000 })
+        }
+      },
+      error: (err) => {
+        this.notification.error('Server Error', err.error?.message || 'Something went wrong', {
+          nzDuration: 2000
+        })
+      }
     })
   }
 
