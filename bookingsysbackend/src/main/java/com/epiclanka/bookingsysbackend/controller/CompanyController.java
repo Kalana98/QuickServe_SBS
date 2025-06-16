@@ -6,10 +6,12 @@ import com.epiclanka.bookingsysbackend.dto.RespondsDTO;
 import com.epiclanka.bookingsysbackend.services.company.CompanyService;
 import com.epiclanka.bookingsysbackend.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
 
@@ -140,18 +142,19 @@ public class CompanyController {
 
 
     @GetMapping("/bookings/{companyId}")
-    public ResponseEntity<?> getAllAdBookings(@PathVariable Long companyId){
+    public ResponseEntity<?> getAllAdBookings(@PathVariable Long companyId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7") int size) {
 
         try {
-            List<ReservationDTO> reservationsDTOList = companyService.getAllAdBookings(companyId);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ReservationDTO> reservationsPage = companyService.getAllAdBookings(companyId, pageable);
 
-            if (reservationsDTOList != null) {
+            if (reservationsPage.hasContent()) {
                 return new ResponseEntity<>(
-                        RespondsDTO.of(VarList.RSP_SUCCESS, null, reservationsDTOList), HttpStatus.OK
+                        RespondsDTO.of(VarList.RSP_SUCCESS, null, reservationsPage), HttpStatus.OK
                 );
-            }else{
+            } else {
                 return new ResponseEntity<>(
-                        RespondsDTO.of(VarList.RSP_NO_DATA_FOUND, "Data not found", null), HttpStatus.NOT_FOUND
+                        RespondsDTO.of(VarList.RSP_NO_DATA_FOUND, "No bookings found", null), HttpStatus.NOT_FOUND
                 );
             }
         } catch (Exception e) {
@@ -160,6 +163,7 @@ public class CompanyController {
             );
         }
     }
+
 
     @GetMapping("/booking/{bookingId}/{status}")
     public ResponseEntity<?> changeBookingStatus(@PathVariable Long bookingId, @PathVariable String status) {

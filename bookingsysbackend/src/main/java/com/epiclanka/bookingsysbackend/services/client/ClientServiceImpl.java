@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
         return VarList.RSP_FAIL;
     }
 
-    //Exception: done
+
     public AdDetailsForClientDTO getAdDetailsByAdId(Long adId) {
         Optional<Ad> optionalAd = adRepository.findById(adId);
         AdDetailsForClientDTO adDetailsForClientDTO = new AdDetailsForClientDTO();

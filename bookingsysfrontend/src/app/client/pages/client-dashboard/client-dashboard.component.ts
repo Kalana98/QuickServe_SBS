@@ -28,7 +28,7 @@ getAllAds() {
     next: (res) => {
       if(res.code === '00'){
         this.ads = res.content;
-        this.notification.success('ALERT', `You have ${res.content.length} ads`, { nzDuration: 1500});
+        // this.notification.success('ALERT', `You have ${res.content.length} ads`, { nzDuration: 1500});
       }else if(res.code === '01'){
         this.ads = [];
         this.notification.blank('ALERT', res.message, { nzDuration: 1500 });

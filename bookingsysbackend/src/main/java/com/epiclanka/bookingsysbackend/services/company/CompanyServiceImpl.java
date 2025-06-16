@@ -10,10 +10,11 @@ import com.epiclanka.bookingsysbackend.repository.AdRepository;
 import com.epiclanka.bookingsysbackend.repository.ReservationRepository;
 import com.epiclanka.bookingsysbackend.repository.UserRepository;
 import com.epiclanka.bookingsysbackend.util.VarList;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -98,10 +99,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     //Exception: done
-    public List<ReservationDTO> getAllAdBookings(Long companyId){
-        return reservationRepository.findAllByCompanyId(companyId)
-                .stream().map(Reservation::getReservationDto).collect(Collectors.toList());
+    @Override
+    public Page<ReservationDTO> getAllAdBookings(Long companyId, Pageable pageable) {
+        return reservationRepository.findAllByCompanyId(companyId, pageable)
+                .map(Reservation::getReservationDto);
     }
+
 
     //Exception: done
     public String changeBookingStatus(Long bookingId, String status) {

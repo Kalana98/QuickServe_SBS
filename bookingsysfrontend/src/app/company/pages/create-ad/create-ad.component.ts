@@ -66,8 +66,8 @@ postAd() {
 
   this.companyService.postAd(formData).subscribe({
   next: (res) => {
-    this.notification.success('Success', res.message || 'Your Ad Posted Successfully!', { nzDuration: 3000 });
     this.router.navigateByUrl('company/ads');
+    this.notification.success('Success', res.message || 'Your Ad Posted Successfully!', { nzDuration: 3000 });
   },
   error: (error) => {
     this.notification.error('Error', error.error?.message || 'Something went wrong!', { nzDuration: 3000 });

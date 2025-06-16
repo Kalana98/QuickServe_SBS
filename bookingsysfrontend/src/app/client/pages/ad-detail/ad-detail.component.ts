@@ -78,7 +78,7 @@ export class AdDetailComponent {
   this.clientService.bookService(bookServiceDTO).subscribe({
     next: (res) => {
       if(res.code === '00'){
-        this.notification.success('Success', res.message, { nzDuration: 3000 });
+        this.notification.success('Success', res.message, { nzDuration: 1000 });
         this.router.navigateByUrl('/client/bookings');
       }else if(res.code === '01'){
         this.notification.warning('ALERT', res.message, { nzDuration: 3000 });

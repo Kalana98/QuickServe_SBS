@@ -11,6 +11,9 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class CompanyDashboardComponent {
 
   bookings:any;
+  currentPage = 1;
+  pageSize = 7;
+  total = 0;
 
   constructor(private companyService: CompanyService,
     private notification: NzNotificationService
@@ -20,26 +23,32 @@ export class CompanyDashboardComponent {
     this.getAllAdBookings();
   }
 
-  getAllAdBookings() {
-    this.companyService.getAllAdBookings().subscribe({
-      next: (res) => {
-        if(res.code === '00'){
-          this.bookings = res.content;
-          this.notification.success('ALERT', `You have ${res.content.length} bookings`, { nzDuration: 2000 });
-        }else if(res.code === '01'){
-          this.bookings = [];
-          this.notification.warning('ALERT', res.message, { nzDuration: 1500 });
-        }else if(res.code === '05'){
-          this.notification.error('ALERT', res.message, { nzDuration: 1500 });
-        }
-      },
-       error: (err) => {
+  getAllAdBookings(): void {
+  this.companyService.getAllAdBookings(this.currentPage - 1, this.pageSize).subscribe({
+    next: (res) => {
+      if (res.code === '00') {
+        this.bookings = res.content.content;
+        this.total = res.content.totalElements;
+        // this.notification.success('ALERT', `You have ${res.content.totalElements} bookings`, { nzDuration: 2000 });
+        console.log(res.content);
+      } else if (res.code === '01') {
+        this.bookings = [];
+        this.total = 0;
+        this.notification.warning('ALERT', res.message, { nzDuration: 1500 });
+      }
+    },
+    error: (err) => {
       this.notification.error('Server Error', err.error?.message || 'Something Went Wrong', {
         nzDuration: 3000
-      })
+      });
     }
-    });
-  }
+  });
+}
+
+onPageChange(page: number): void {
+  this.currentPage = page;
+  this.getAllAdBookings();
+}
 
   changeBookingStatus(bookingId: number, status: string) {
   this.companyService.changeBookingStatus(bookingId, status).subscribe({

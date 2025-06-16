@@ -51,12 +51,14 @@ export class CompanyService {
 }
 
 
-    getAllAdBookings(): Observable<any> {
+getAllAdBookings(page: number, size: number): Observable<any> {
   const companyId = UserStorageService.getUserId();
-  return this.http.get(BASIC_URL + `/api/company/bookings/${companyId}`, {
+  return this.http.get(`${BASIC_URL}/api/company/bookings/${companyId}?page=${page}&size=${size}`, {
     headers: this.createAuthorizationHeader()
   });
 }
+
+
 
   createAuthorizationHeader(): HttpHeaders {
     let authHeaders: HttpHeaders = new HttpHeaders();

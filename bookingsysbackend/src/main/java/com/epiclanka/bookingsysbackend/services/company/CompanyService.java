@@ -2,7 +2,9 @@ package com.epiclanka.bookingsysbackend.services.company;
 
 import com.epiclanka.bookingsysbackend.dto.AdDTO;
 import com.epiclanka.bookingsysbackend.dto.ReservationDTO;
+import org.springframework.data.domain.Page;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +20,10 @@ public interface CompanyService {
 
     String deleteAd(Long adId);
 
-    List<ReservationDTO> getAllAdBookings(Long companyId);
+//    List<ReservationDTO> getAllAdBookings(Long companyId);
+
+    //Exception: done
+    Page<ReservationDTO> getAllAdBookings(Long companyId, Pageable pageable);
 
     String changeBookingStatus(Long bookingId, String status);
 }

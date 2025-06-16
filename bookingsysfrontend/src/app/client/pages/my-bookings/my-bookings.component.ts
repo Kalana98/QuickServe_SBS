@@ -32,7 +32,7 @@ getMyBookings() {
     next: (res) => {
       if(res.code === '00'){
         this.bookedServices = res.content;
-        this.notification.success('ALERT', `You have ${res.content.length} bookings`, { nzDuration: 3000});
+        // this.notification.success('ALERT', `You have ${res.content.length} bookings`, { nzDuration: 3000});
       }else if(res.code === '01'){
         this.bookedServices = [];
         this.notification.warning('Alert', res.message, { nzDuration: 3000})
