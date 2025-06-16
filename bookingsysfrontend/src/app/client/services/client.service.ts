@@ -12,18 +12,17 @@ export class ClientService {
 
   constructor(private http: HttpClient) { }
 
-  getAllAds(): Observable<any> {
-    const userId = UserStorageService.getUserId();
-    return this.http.get(BASIC_URL + `/api/client/ads`, {
-      headers: this.createAuthorizationHeader()
-    });
-  }
+  // getAllAds(): Observable<any> {
+  //   const userId = UserStorageService.getUserId();
+  //   return this.http.get(BASIC_URL + `/api/client/ads`, {
+  //     headers: this.createAuthorizationHeader()
+  //   });
+  // }
   getAllAdsPaginated(page: number, size: number): Observable<any> {
   return this.http.get(BASIC_URL + `/api/client/ads/paginated?page=${page}&size=${size}`, {
     headers: this.createAuthorizationHeader()
   });
 }
-
 
   searchAdByName(name:any): Observable<any> {
     return this.http.get(BASIC_URL + `/api/client/search/${name}`, {
@@ -49,9 +48,9 @@ bookService(bookDTO: any): Observable<any> {
   });
 }
 
-getMyBookings(): Observable<any> {
+getMyBookings(page: number, size: number): Observable<any> {
   const userId = UserStorageService.getUserId();
-  return this.http.get(BASIC_URL + `/api/client/my-bookings/${userId}`, {
+  return this.http.get(`${BASIC_URL}/api/client/my-bookings/${userId}?page=${page}&size=${size}`, {
     headers: this.createAuthorizationHeader()
   });
 }

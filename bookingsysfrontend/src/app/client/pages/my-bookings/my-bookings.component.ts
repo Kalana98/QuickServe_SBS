@@ -15,6 +15,9 @@ export class MyBookingsComponent {
   ads: any = [];
   bookedServices: any;
   username: string = '';
+  currentPage = 1;
+  pageSize = 6;
+  total = 0;
 
 constructor(
   private clientService: ClientService,
@@ -27,14 +30,16 @@ ngOnInit() {
   this.username = UserStorageService.getUserName();
 }
 
-getMyBookings() {
-  this.clientService.getMyBookings().subscribe({
+getMyBookings(): void {
+  this.clientService.getMyBookings(this.currentPage - 1, this.pageSize).subscribe({
     next: (res) => {
       if(res.code === '00'){
-        this.bookedServices = res.content;
+        this.bookedServices = res.content.content;
+        this.total = res.content.totalElements;
         // this.notification.success('ALERT', `You have ${res.content.length} bookings`, { nzDuration: 3000});
       }else if(res.code === '01'){
         this.bookedServices = [];
+        this.total = 0;
         this.notification.warning('Alert', res.message, { nzDuration: 3000})
       }else if(res.code === '05'){
         this.notification.error('Error', res.message, { nzDuration: 3000})
@@ -48,6 +53,10 @@ getMyBookings() {
   });
 }
 
+onPageChange(page: number): void {
+  this.currentPage = page;
+  this.getMyBookings();
+}
   
 deleteBooking(id:any){
     this.clientService.deleteBooking(id).subscribe(res => {

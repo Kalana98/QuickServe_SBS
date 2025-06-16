@@ -2,6 +2,15 @@
   <h3><b>Hey {{username}}, These are your bookings !</b></h3>
 </div>
 
+<nz-pagination
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [(nzPageIndex)]="currentPage"
+  (nzPageIndexChange)="onPageChange($event)"
+  style="text-align: right;
+  padding: 10px;"
+  >
+</nz-pagination>
 
   <nz-table style="padding: 30px;" [nzData]="bookedServices" #basicTable [nzPageSize]="20" [nzShowPagination]="'false'">
   <thead>
