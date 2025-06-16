@@ -7,6 +7,17 @@
           [disabled]="validateForm.invalid">Search</button>
 </form>
 
+<nz-pagination
+  [nzTotal]="totalAds"
+  [nzPageSize]="pageSize"
+  [(nzPageIndex)]="currentPage"
+  (nzPageIndexChange)="onPageChange($event)"
+  style="text-align: right;
+  padding: 10px;"
+  >
+</nz-pagination>
+
+
 
 <div class="bg" style="padding-top: 20px;" >
   <div style="margin-top:10px;" class="child" *ngFor="let ad of ads" (click)="navigateViewPage(ad.id)">

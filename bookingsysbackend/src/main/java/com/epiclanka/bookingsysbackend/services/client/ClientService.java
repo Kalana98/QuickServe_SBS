@@ -4,13 +4,15 @@ import com.epiclanka.bookingsysbackend.dto.AdDTO;
 import com.epiclanka.bookingsysbackend.dto.AdDetailsForClientDTO;
 import com.epiclanka.bookingsysbackend.dto.ReservationDTO;
 import com.epiclanka.bookingsysbackend.dto.ReviewDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 
 public interface ClientService {
 
-    List<AdDTO> getAllAds();
+    Page<AdDTO> getAllAds(Long userId, Pageable pageable);
 
     List<AdDTO> searchAdByName(String name);
 

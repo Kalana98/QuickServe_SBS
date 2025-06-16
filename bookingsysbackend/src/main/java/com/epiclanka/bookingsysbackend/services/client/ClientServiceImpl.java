@@ -16,6 +16,8 @@ import com.epiclanka.bookingsysbackend.repository.ReviewRepository;
 import com.epiclanka.bookingsysbackend.repository.UserRepository;
 import com.epiclanka.bookingsysbackend.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,8 +42,8 @@ public class ClientServiceImpl implements ClientService {
     private ReviewRepository reviewRepository;
 
     //Exception: done
-    public List<AdDTO> getAllAds(){
-        return adRepository.findAll().stream().map(Ad::getAdDto).collect(Collectors.toList());
+    public Page<AdDTO> getAllAds(Long userId, Pageable pageable){
+        return adRepository.findAllAdsByUserId(user).map(Ad::getAdDto);
     }
 
     //Exception: done

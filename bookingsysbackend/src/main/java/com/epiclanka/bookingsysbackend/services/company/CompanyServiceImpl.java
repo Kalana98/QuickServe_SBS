@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     //Exception: done
     public Page<AdDTO> getAllAds(Long userId, Pageable pageable){
-        return adRepository.findAllAdsByUserId(userId, pageable)
+        return adRepository.findAllByUser_Id(userId, pageable)
                 .map(Ad::getAdDto);
 
     }

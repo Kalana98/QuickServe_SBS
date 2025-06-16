@@ -12,8 +12,12 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 })
 export class ClientDashboardComponent {
 
-  ads: any = [];
   validateForm!: FormGroup;
+  ads: any[] = [];
+  currentPage: number = 1;
+  pageSize: number = 3;
+  totalAds: number = 0;
+  
  // username: string = '';
 
 constructor(
@@ -24,25 +28,30 @@ constructor(
 ) {}
 
 getAllAds() {
-  this.clientService.getAllAds().subscribe({
+  this.clientService.getAllAdsPaginated(this.currentPage - 1, this.pageSize).subscribe({
     next: (res) => {
-      if(res.code === '00'){
+      if (res.code === '00') {
         this.ads = res.content;
-        // this.notification.success('ALERT', `You have ${res.content.length} ads`, { nzDuration: 1500});
-      }else if(res.code === '01'){
+        this.totalAds = res.total;
+      } else {
         this.ads = [];
-        this.notification.blank('ALERT', res.message, { nzDuration: 1500 });
-      }else if(res.code === '05'){
-        this.notification.error('ALERT', res.message, { nzDuration: 1500 });
+        this.totalAds = 0;
+        this.notification.warning('No Ads', res.message, { nzDuration: 1500 });
       }
     },
     error: (err) => {
       this.notification.error('Server Error', err.error?.message || 'Something Went Wrong', {
         nzDuration: 3000
-      })
+      });
     }
   });
 }
+
+onPageChange(pageIndex: number): void {
+  this.currentPage = pageIndex;
+  this.getAllAds();
+}
+
 
 ngOnInit() {
   this.validateForm = this.fb.group({
