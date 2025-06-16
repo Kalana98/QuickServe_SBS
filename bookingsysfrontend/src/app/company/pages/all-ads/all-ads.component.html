@@ -1,3 +1,12 @@
+<div style="display: flex; justify-content: end; padding: 10px 20px;">
+    <nz-pagination
+      [nzPageIndex]="currentPage"
+      [nzPageSize]="pageSize"
+      [nzTotal]="total"
+      (nzPageIndexChange)="onPageChange($event)">
+    </nz-pagination>
+</div>
+
 <div class="bg" style="padding-top: 20px;">
   <div style="margin-top:10px;" class="child" *ngFor="let ad of ads">
     <div nz-row>

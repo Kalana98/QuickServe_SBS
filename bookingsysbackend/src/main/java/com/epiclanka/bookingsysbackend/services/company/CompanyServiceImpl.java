@@ -13,7 +13,6 @@ import com.epiclanka.bookingsysbackend.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
 import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
@@ -51,11 +50,10 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     //Exception: done
-    public List<AdDTO> getAllAds(Long userId) {
-        return adRepository.findAllByUserId(userId)
-                .stream()
-                .map(Ad::getAdDto)
-                .collect(Collectors.toList());
+    public Page<AdDTO> getAllAds(Long userId, Pageable pageable){
+        return adRepository.findAllAdsByUserId(userId, pageable)
+                .map(Ad::getAdDto);
+
     }
 
     //Exception: done

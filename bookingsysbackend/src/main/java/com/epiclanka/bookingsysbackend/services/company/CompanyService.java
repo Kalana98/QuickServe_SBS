@@ -12,7 +12,7 @@ public interface CompanyService {
 
     String postAd(Long userId, AdDTO adDTO) throws IOException;
 
-    List<AdDTO> getAllAds(Long userId);
+//    List<AdDTO> getAllAds(Long userId);
 
     AdDTO getAdById(Long adId);
 
@@ -20,7 +20,7 @@ public interface CompanyService {
 
     String deleteAd(Long adId);
 
-//    List<ReservationDTO> getAllAdBookings(Long companyId);
+    Page<AdDTO> getAllAds(Long userId, Pageable pageable);
 
     //Exception: done
     Page<ReservationDTO> getAllAdBookings(Long companyId, Pageable pageable);

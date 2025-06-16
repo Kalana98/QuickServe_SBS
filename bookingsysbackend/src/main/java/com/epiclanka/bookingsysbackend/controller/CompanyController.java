@@ -48,13 +48,15 @@ public class CompanyController {
     }
 
     @GetMapping("/ads/{userId}")
-    public ResponseEntity<?> getAllAdsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getAllAdsByUserId(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         try {
-            List<AdDTO> adDTOList = companyService.getAllAds(userId);
 
-            if (!adDTOList.isEmpty()) {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<AdDTO> adDTOsPage = companyService.getAllAds(userId, pageable);
+
+            if (adDTOsPage.hasContent()){
                 return new ResponseEntity<>(
-                        RespondsDTO.of(VarList.RSP_SUCCESS, null, adDTOList), HttpStatus.OK
+                        RespondsDTO.of(VarList.RSP_SUCCESS, null, adDTOsPage), HttpStatus.OK
                 );
             }else{
                 return new ResponseEntity<>(
